@@ -1,5 +1,9 @@
 package com.estatehub.backend.model.repo;
 
-public interface PropertyRepo {
+import com.estatehub.backend.model.BaseRepo;
+import com.estatehub.backend.model.entity.Property;
+
+public interface PropertyRepo extends BaseRepo<Property, Long>{
+
 
 }

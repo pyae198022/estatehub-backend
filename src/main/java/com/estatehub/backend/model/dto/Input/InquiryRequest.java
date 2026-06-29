@@ -1,4 +1,4 @@
-package com.estatehub.backend.model.dto.Request;
+package com.estatehub.backend.model.dto.Input;
 
 public record InquiryRequest(
 		Long propertyId,
