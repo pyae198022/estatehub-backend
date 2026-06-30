@@ -11,6 +11,7 @@ import com.estatehub.backend.model.dto.Response.ModificationResult;
 import com.estatehub.backend.model.dto.Response.PropertyDetails;
 import com.estatehub.backend.model.dto.Response.PropertyListItem;
 import com.estatehub.backend.model.entity.Property;
+import com.estatehub.backend.model.entity.PropertyImage;
 import com.estatehub.backend.model.entity.Property_;
 import com.estatehub.backend.model.repo.PropertyRepo;
 import com.estatehub.backend.model.repo.UserRepo;
@@ -91,5 +92,24 @@ public class PropertyService {
 	    
 	    entity.setStatus("AVAILABLE"); 
 	    return new ModificationResult<>(true, id, "Property with id %d has been successfully approved and is now AVAILABLE.".formatted(id));
+	}
+	
+	@Transactional
+	public ModificationResult<Long> addImages(Long propertyId, List<String> imageUrls, Long coverImageIndex) {
+	    var property = propertyRepository.findById(propertyId)
+	            .orElseThrow(() -> new AppBussinessException("Property not found"));
+
+	    for (int i = 0; i < imageUrls.size(); i++) {
+	        var img = new PropertyImage();
+	        img.setImageUrl(imageUrls.get(i));
+	        img.setProperty(property);
+	        
+	        if (coverImageIndex != null && coverImageIndex == i) {
+	            img.setCover(true);
+	        }
+	        
+	        property.getImages().add(img);
+	    }
+	    return new ModificationResult<>(true, propertyId, "Images uploaded successfully.");
 	}
 }

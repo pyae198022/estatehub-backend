@@ -2,8 +2,10 @@ package com.estatehub.backend.model.dto.Response;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 import com.estatehub.backend.model.entity.Property;
+import com.estatehub.backend.model.entity.PropertyImage;
 
 public record PropertyDetails(
 		Long id,
@@ -15,7 +17,8 @@ public record PropertyDetails(
 	    String township,
 	    String city,
 	    String status,
-	    Long ownerId
+	    Long ownerId,
+	    List<String> imageUrls
 
 		) {
 
@@ -34,7 +37,8 @@ public record PropertyDetails(
             entity.getTownship(),
             entity.getCity(),
             entity.getStatus(),
-            entity.getOwner() != null ? entity.getOwner().getId() : null
+            entity.getOwner() != null ? entity.getOwner().getId() : null,
+            entity.getImages().stream().map(PropertyImage::getImageUrl).toList()
         );
     }
 }

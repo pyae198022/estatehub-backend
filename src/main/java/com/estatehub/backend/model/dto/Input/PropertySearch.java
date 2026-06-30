@@ -1,12 +1,14 @@
 package com.estatehub.backend.model.dto.Input;
 
 import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.JoinType;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 
 import com.estatehub.backend.model.entity.Property;
+import com.estatehub.backend.model.entity.PropertyImage_;
 import com.estatehub.backend.model.entity.Property_;
 
 public record PropertySearch(
@@ -37,7 +39,7 @@ public record PropertySearch(
         }
         
         if (propertyType != null && !propertyType.isBlank()) {
-            predicates.add(cb.equal(root.get(Property_.listingType), propertyType));
+            predicates.add(cb.equal(root.get(Property_.propertyType), propertyType)); 
         }
 
         if (minPrice != null) {
@@ -50,8 +52,8 @@ public record PropertySearch(
 
         // Active Status Criteria
         predicates.add(cb.equal(root.get(Property_.status), "AVAILABLE"));
-
-        return predicates.toArray(new Predicate[0]);
+       
+        return predicates.toArray(size -> new Predicate[size]);
     }
 
     public Predicate[] having(CriteriaBuilder cb, Root<Property> root) {

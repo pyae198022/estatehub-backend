@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.estatehub.backend.model.dto.Input.PropertyForm;
@@ -57,5 +58,13 @@ public class PropertyApi {
     @PutMapping("/{id}/approve")
     public ModificationResult<Long> approveProperty(@PathVariable Long id) {
         return propertyService.approveById(id);
+    }
+    
+    @PostMapping("/{id}/images")
+    public ModificationResult<Long> uploadImages(
+            @PathVariable Long id, 
+            @RequestBody List<String> imageUrls,
+            @RequestParam(required = false, defaultValue = "0") Long coverIndex) {
+        return propertyService.addImages(id, imageUrls, coverIndex);
     }
 }
