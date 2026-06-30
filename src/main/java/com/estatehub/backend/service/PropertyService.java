@@ -22,18 +22,18 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class PropertyService {
-	
-	private final  UserRepo userRepository;
+	private final UserRepo userRepository;
 	private final PropertyRepo propertyRepository;
 	
 	@Transactional
 	public ModificationResult<Long> create(PropertyForm request) {
-
 	    var owner = userRepository.findById(request.ownerId())
 	            .orElseThrow(() -> new AppBussinessException("Owner not found"));
 
 	    var property = request.entity();
 	    property.setOwner(owner); 
+	    
+	    property.setStatus("PENDING"); 
 
 	    var saved = propertyRepository.save(property);
 	    return ModificationResult.success(saved.getId());
@@ -48,25 +48,19 @@ public class PropertyService {
 	    return ModificationResult.success(property.getId());
 	}
 	
-	
 	public List<PropertyListItem> search(PropertySearch search) {
         return propertyRepository.search(cb -> {
             var cq = cb.createQuery(PropertyListItem.class);
             var root = cq.from(Property.class);
-            
-            // DTO projection selection logic
             PropertyListItem.select(cb, cq, root);
             
-            // Dynamic Where Clause
             cq.where(search.where(cb, root));
             
-            // Dynamic Having Clause
             var havingPredicates = search.having(cb, root);
             if (havingPredicates.length > 0) {
                 cq.having(havingPredicates);
             }
             
-            // Order by Latest ID using Metamodel
             cq.orderBy(cb.desc(root.get(Property_.id)));
                     
             return cq;
@@ -80,4 +74,22 @@ public class PropertyService {
         return PropertyDetails.from(entity);
     }
 	
+	@Transactional
+	public ModificationResult<Long> deleteById(Long id) {
+	    var entity = propertyRepository.findById(id)
+	            .orElseThrow(() -> new AppBussinessException("There is no property with id %d".formatted(id)));
+	    
+	    entity.setStatus("SOLD"); 
+	    
+	    return new ModificationResult<>(true, id, "Property with id %d has been successfully marked as SOLD.".formatted(id));
+	}
+
+	@Transactional
+	public ModificationResult<Long> approveById(Long id) {
+	    var entity = propertyRepository.findById(id)
+	            .orElseThrow(() -> new AppBussinessException("There is no property with id %d".formatted(id)));
+	    
+	    entity.setStatus("AVAILABLE"); 
+	    return new ModificationResult<>(true, id, "Property with id %d has been successfully approved and is now AVAILABLE.".formatted(id));
+	}
 }

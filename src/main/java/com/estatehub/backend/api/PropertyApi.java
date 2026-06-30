@@ -2,6 +2,7 @@ package com.estatehub.backend.api;
 
 import java.util.List;
 
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -33,7 +34,7 @@ public class PropertyApi {
     }
 	
 	@GetMapping("/{id}")
-    public PropertyDetails getPropertyById(@PathVariable Long id) {
+    public PropertyDetails findByPropertyId(@PathVariable Long id) {
         return propertyService.findById(id);
     }
 	
@@ -47,5 +48,14 @@ public class PropertyApi {
             @PathVariable Long id, 
             @Valid @RequestBody PropertyForm request) {
         return propertyService.update(id, request);
+    }
+    @DeleteMapping("/{id}")
+    public ModificationResult<Long> deleteProperty(@PathVariable Long id) {
+        return propertyService.deleteById(id);
+    }
+    
+    @PutMapping("/{id}/approve")
+    public ModificationResult<Long> approveProperty(@PathVariable Long id) {
+        return propertyService.approveById(id);
     }
 }

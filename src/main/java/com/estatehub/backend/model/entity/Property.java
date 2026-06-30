@@ -59,7 +59,6 @@ public class Property {
 
 	@PrePersist
 	protected void onCreate() {
-		this.status = "AVAILABLE";
 		this.createdAt = LocalDateTime.now();
 		this.updatedAt = LocalDateTime.now();
 	}
