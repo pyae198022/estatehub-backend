@@ -1,15 +1,15 @@
 package com.estatehub.backend.model.dto.Input;
 
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.JoinType;
-import jakarta.persistence.criteria.Predicate;
-import jakarta.persistence.criteria.Root;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 
 import com.estatehub.backend.model.entity.Property;
-import com.estatehub.backend.model.entity.PropertyImage_;
 import com.estatehub.backend.model.entity.Property_;
+
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
 
 public record PropertySearch(
     String keyword,
@@ -17,7 +17,9 @@ public record PropertySearch(
     String listingType,
     String propertyType,
     BigDecimal minPrice,
-    BigDecimal maxPrice
+    BigDecimal maxPrice,
+    String sortBy, 
+    String order
 ) {
     public Predicate[] where(CriteriaBuilder cb, Root<Property> root) {
         var predicates = new ArrayList<Predicate>();
@@ -58,5 +60,16 @@ public record PropertySearch(
 
     public Predicate[] having(CriteriaBuilder cb, Root<Property> root) {
         return new Predicate[0];
+    }
+    
+    public void applySort(CriteriaBuilder cb, CriteriaQuery<?> cq, Root<Property> root) {
+        if (sortBy != null && !sortBy.isBlank()) {
+            var sortField = root.get(sortBy);
+            var orderClause = "DESC".equalsIgnoreCase(order) ? cb.desc(sortField) : cb.asc(sortField);
+            cq.orderBy(orderClause);
+        } else {
+            
+            cq.orderBy(cb.desc(root.get(Property_.id)));
+        }
     }
 }

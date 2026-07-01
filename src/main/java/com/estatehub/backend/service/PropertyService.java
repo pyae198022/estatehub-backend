@@ -61,17 +61,16 @@ public class PropertyService {
             if (havingPredicates.length > 0) {
                 cq.having(havingPredicates);
             }
-            
-            cq.orderBy(cb.desc(root.get(Property_.id)));
-                    
+            search.applySort(cb, cq, root);
             return cq;
         });
     }
 	
+	@Transactional
 	public PropertyDetails findById(Long id) {
         var entity = propertyRepository.findById(id)
                 .orElseThrow(() -> new AppBussinessException("There is no property with id %d".formatted(id)));
-        
+        entity.setViewCount(entity.getViewCount() + 1);
         return PropertyDetails.from(entity);
     }
 	

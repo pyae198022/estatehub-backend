@@ -61,6 +61,9 @@ public class Property {
 	@Column(name = "updated_at")
 	private LocalDateTime updatedAt;
 	
+	@Column(nullable = false)
+	private int viewCount = 0;
+	
 	@OneToMany(mappedBy = "property", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<PropertyImage> images = new ArrayList<>();
 

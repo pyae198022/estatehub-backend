@@ -18,7 +18,8 @@ public record PropertyDetails(
 	    String city,
 	    String status,
 	    Long ownerId,
-	    List<String> imageUrls
+	    List<String> imageUrls,
+	    int viewCount
 
 		) {
 
@@ -38,7 +39,8 @@ public record PropertyDetails(
             entity.getCity(),
             entity.getStatus(),
             entity.getOwner() != null ? entity.getOwner().getId() : null,
-            entity.getImages().stream().map(PropertyImage::getImageUrl).toList()
+            entity.getImages().stream().map(PropertyImage::getImageUrl).toList(),
+            entity.getViewCount()
         );
     }
 }
