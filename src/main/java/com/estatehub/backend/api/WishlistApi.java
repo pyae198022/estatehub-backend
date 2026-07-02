@@ -26,7 +26,6 @@ public class WishlistApi {
         return wishlistService.toggleWishlist(userId, propertyId);
     }
 
-
     @GetMapping("/{userId}")
     public List<PropertyListItem> getWishlist(@PathVariable Long userId) {
         return wishlistService.getUserWishlist(userId);
