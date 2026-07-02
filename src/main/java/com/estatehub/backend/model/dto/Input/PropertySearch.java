@@ -19,7 +19,9 @@ public record PropertySearch(
     BigDecimal minPrice,
     BigDecimal maxPrice,
     String sortBy, 
-    String order
+    String order,
+    Integer page,
+    Integer size
 ) {
     public Predicate[] where(CriteriaBuilder cb, Root<Property> root) {
         var predicates = new ArrayList<Predicate>();

@@ -6,11 +6,15 @@ import java.util.function.Function;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.NoRepositoryBean;
 
+import com.estatehub.backend.model.dto.Input.PropertySearch;
+
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 
 @NoRepositoryBean
 public interface BaseRepo<T, ID> extends JpaRepository<T, ID>{
 
-	<R> List<R> search(Function<CriteriaBuilder, CriteriaQuery<R>> queryFunc);
+	
+	<R> List<R> search(Function<CriteriaBuilder, CriteriaQuery<R>> queryFunc, PropertySearch search);
+
 }

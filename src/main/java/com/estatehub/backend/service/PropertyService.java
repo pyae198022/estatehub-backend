@@ -1,28 +1,29 @@
 package com.estatehub.backend.service;
 import java.util.List;
 
-
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.estatehub.backend.model.dto.Input.PropertyForm;
 import com.estatehub.backend.model.dto.Input.PropertySearch;
 import com.estatehub.backend.model.dto.Response.ModificationResult;
+import com.estatehub.backend.model.dto.Response.Pagnation;
 import com.estatehub.backend.model.dto.Response.PropertyDetails;
 import com.estatehub.backend.model.dto.Response.PropertyListItem;
 import com.estatehub.backend.model.entity.Property;
 import com.estatehub.backend.model.entity.PropertyImage;
-import com.estatehub.backend.model.entity.Property_;
 import com.estatehub.backend.model.repo.PropertyRepo;
 import com.estatehub.backend.model.repo.UserRepo;
 import com.estatehub.backend.utils.AppBussinessException;
 
+import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class PropertyService {
+	private final EntityManager entityManager;
 	private final UserRepo userRepository;
 	private final PropertyRepo propertyRepository;
 	
@@ -48,24 +49,30 @@ public class PropertyService {
 	    request.update(property);
 	    return ModificationResult.success(property.getId());
 	}
-	
-	public List<PropertyListItem> search(PropertySearch search) {
-        return propertyRepository.search(cb -> {
-            var cq = cb.createQuery(PropertyListItem.class);
-            var root = cq.from(Property.class);
-            PropertyListItem.select(cb, cq, root);
-            
-            cq.where(search.where(cb, root));
-            
-            var havingPredicates = search.having(cb, root);
-            if (havingPredicates.length > 0) {
-                cq.having(havingPredicates);
-            }
-            search.applySort(cb, cq, root);
-            return cq;
-        });
-    }
-	
+	public Pagnation<PropertyListItem> search(PropertySearch search) {
+
+	    long totalElements = countSearch(search);
+	    
+	    var list = propertyRepository.search(cb -> {
+	        var cq = cb.createQuery(PropertyListItem.class);
+	        var root = cq.from(Property.class);
+	        PropertyListItem.select(cb, cq, root);
+	        
+	        cq.where(search.where(cb, root));
+	        
+	        var havingPredicates = search.having(cb, root);
+	        if (havingPredicates.length > 0) {
+	            cq.having(havingPredicates);
+	        }
+	        search.applySort(cb, cq, root);
+	        
+	        return cq;
+	    }, search); 
+
+	    int totalPages = (int) Math.ceil((double) totalElements / search.size());
+
+	    return new Pagnation<>(list, search.page(), search.size(), totalElements, totalPages);
+	}
 	@Transactional
 	public PropertyDetails findById(Long id) {
         var entity = propertyRepository.findById(id)
@@ -111,4 +118,15 @@ public class PropertyService {
 	    }
 	    return new ModificationResult<>(true, propertyId, "Images uploaded successfully.");
 	}
+	
+	public long countSearch(PropertySearch search) {
+        var cb = entityManager.getCriteriaBuilder();
+        var cq = cb.createQuery(Long.class);
+        var root = cq.from(Property.class);
+        
+        cq.select(cb.count(root));
+        cq.where(search.where(cb, root));
+        
+        return entityManager.createQuery(cq).getSingleResult();
+    }
 }

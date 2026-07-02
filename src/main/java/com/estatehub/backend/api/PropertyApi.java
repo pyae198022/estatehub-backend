@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.estatehub.backend.model.dto.Input.PropertyForm;
 import com.estatehub.backend.model.dto.Input.PropertySearch;
 import com.estatehub.backend.model.dto.Response.ModificationResult;
+import com.estatehub.backend.model.dto.Response.Pagnation;
 import com.estatehub.backend.model.dto.Response.PropertyDetails;
 import com.estatehub.backend.model.dto.Response.PropertyListItem;
 import com.estatehub.backend.service.PropertyService;
@@ -30,7 +31,7 @@ public class PropertyApi {
 	private final PropertyService propertyService;
 	
 	@GetMapping("/search")
-    public List<PropertyListItem> searchProperties(PropertySearch search) {
+    public Pagnation<PropertyListItem> searchProperties(PropertySearch search) {
         return propertyService.search(search);
     }
 	
