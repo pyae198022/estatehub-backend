@@ -47,7 +47,7 @@ public class AuthService {
                 .orElseThrow(() -> new AppBussinessException("User not found"));
         
         if (!passwordEncoder.matches(password, user.getPassword())) {
-            throw new RuntimeException("Invalid password");
+            throw new AppBussinessException("Invalid password");
         }
         
         return jwtService.generateToken(email);
