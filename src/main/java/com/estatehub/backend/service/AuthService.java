@@ -1,5 +1,6 @@
 package com.estatehub.backend.service;
 
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -51,5 +52,13 @@ public class AuthService {
         }
         
         return jwtService.generateToken(email);
+    }
+    
+    public static Long getCurrentUserId() {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (principal instanceof User user) {
+            return user.getId();
+        }
+        throw new AppBussinessException("User is not authenticated");
     }
 }

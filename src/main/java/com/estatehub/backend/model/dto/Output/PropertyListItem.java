@@ -1,4 +1,4 @@
-package com.estatehub.backend.model.dto.Response;
+package com.estatehub.backend.model.dto.Output;
 import java.math.BigDecimal;
 
 import com.estatehub.backend.model.entity.Property;

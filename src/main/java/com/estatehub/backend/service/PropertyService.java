@@ -6,10 +6,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.estatehub.backend.model.dto.Input.PropertyForm;
 import com.estatehub.backend.model.dto.Input.PropertySearch;
-import com.estatehub.backend.model.dto.Response.ModificationResult;
-import com.estatehub.backend.model.dto.Response.Pagnation;
-import com.estatehub.backend.model.dto.Response.PropertyDetails;
-import com.estatehub.backend.model.dto.Response.PropertyListItem;
+import com.estatehub.backend.model.dto.Output.ModificationResult;
+import com.estatehub.backend.model.dto.Output.Pagnation;
+import com.estatehub.backend.model.dto.Output.PropertyDetails;
+import com.estatehub.backend.model.dto.Output.PropertyListItem;
 import com.estatehub.backend.model.entity.Property;
 import com.estatehub.backend.model.entity.PropertyImage;
 import com.estatehub.backend.model.repo.PropertyRepo;

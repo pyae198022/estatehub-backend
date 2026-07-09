@@ -5,8 +5,8 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.estatehub.backend.model.dto.Response.ModificationResult;
-import com.estatehub.backend.model.dto.Response.PropertyListItem;
+import com.estatehub.backend.model.dto.Output.ModificationResult;
+import com.estatehub.backend.model.dto.Output.PropertyListItem;
 import com.estatehub.backend.model.entity.WishlistItem;
 import com.estatehub.backend.model.repo.PropertyRepo;
 import com.estatehub.backend.model.repo.UserRepo;

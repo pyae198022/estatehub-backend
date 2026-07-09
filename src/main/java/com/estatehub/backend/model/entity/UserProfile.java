@@ -1,5 +1,6 @@
 package com.estatehub.backend.model.entity;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -19,6 +20,9 @@ public class UserProfile {
     private String fullName;
     private String profileImageUrl;
     private String bio;
+    
+    @Column(length = 50)
+    private String phone;
 
     @OneToOne
     @JoinColumn(name = "user_id", nullable = false)

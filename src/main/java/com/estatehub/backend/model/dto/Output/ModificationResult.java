@@ -1,4 +1,4 @@
-package com.estatehub.backend.model.dto.Response;
+package com.estatehub.backend.model.dto.Output;
 
 
 public record ModificationResult<ID>(

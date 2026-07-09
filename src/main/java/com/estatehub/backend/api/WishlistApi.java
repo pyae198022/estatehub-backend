@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.estatehub.backend.model.dto.Response.ModificationResult;
-import com.estatehub.backend.model.dto.Response.PropertyListItem;
+import com.estatehub.backend.model.dto.Output.ModificationResult;
+import com.estatehub.backend.model.dto.Output.PropertyListItem;
 import com.estatehub.backend.service.WishlistService;
 
 import lombok.RequiredArgsConstructor;
