@@ -2,6 +2,7 @@ package com.estatehub.backend.secuity;
 
 import java.io.IOException;
 
+import io.jsonwebtoken.JwtException;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -39,10 +40,19 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
         jwt = authHeader.substring(7);
-        userEmail = jwtService.extractUsername(jwt);
+
+        try {
+            userEmail = jwtService.extractUsername(jwt);
+        } catch (JwtException | IllegalArgumentException e) {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.setContentType("application/json");
+            response.getWriter().write("{\"message\":\"Invalid or expired token\"}");
+            return;
+        }
 
         if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             var userDetails = this.userDetailsService.loadUserByUsername(userEmail);
+            
             if (jwtService.isTokenValid(jwt, userDetails)) {
                 var authToken = new UsernamePasswordAuthenticationToken(
                         userDetails, null, userDetails.getAuthorities());
@@ -50,6 +60,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 SecurityContextHolder.getContext().setAuthentication(authToken);
             }
         }
+        
         filterChain.doFilter(request, response);
 		
 	}

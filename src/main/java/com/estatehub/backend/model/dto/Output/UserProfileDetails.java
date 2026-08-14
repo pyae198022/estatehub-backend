@@ -3,20 +3,24 @@ package com.estatehub.backend.model.dto.Output;
 import com.estatehub.backend.model.entity.UserProfile;
 
 public record UserProfileDetails(
-		String fullName,
+		Long id,
+		String email, 
+	    String fullName,
 	    String profileImageUrl,
 	    String bio,
-	    String email, 
-	    String phone
+	    String phone,
+	    String role
 		) {
 	
 	public static UserProfileDetails from(UserProfile profile) {
         return new UserProfileDetails(
+            profile.getUser().getId(),
+            profile.getUser().getEmail(),
             profile.getFullName(),
             profile.getProfileImageUrl(),
             profile.getBio(),
-            profile.getUser().getEmail(),
-            profile.getPhone()
+            profile.getPhone(),
+            profile.getUser().getRole() != null ? profile.getUser().getRole().name() : null
         );
     }
 }

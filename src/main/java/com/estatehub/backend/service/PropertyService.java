@@ -8,11 +8,13 @@ import com.estatehub.backend.model.dto.Input.PropertyForm;
 import com.estatehub.backend.model.dto.Input.PropertySearch;
 import com.estatehub.backend.model.dto.Output.ModificationResult;
 import com.estatehub.backend.model.dto.Output.Pagnation;
+import com.estatehub.backend.model.dto.Output.PendingPropertyItem;
 import com.estatehub.backend.model.dto.Output.PropertyDetails;
 import com.estatehub.backend.model.dto.Output.PropertyListItem;
 import com.estatehub.backend.model.entity.Property;
 import com.estatehub.backend.model.entity.PropertyImage;
 import com.estatehub.backend.model.repo.PropertyRepo;
+import com.estatehub.backend.model.repo.UserProfileRepo;
 import com.estatehub.backend.model.repo.UserRepo;
 import com.estatehub.backend.utils.AppBussinessException;
 
@@ -26,6 +28,7 @@ public class PropertyService {
 	private final EntityManager entityManager;
 	private final UserRepo userRepository;
 	private final PropertyRepo propertyRepository;
+	private final UserProfileRepo profileRepo;
 	
 	@Transactional
 	public ModificationResult<Long> create(PropertyForm request) {
@@ -69,9 +72,12 @@ public class PropertyService {
 	        return cq;
 	    }, search); 
 
-	    int totalPages = (int) Math.ceil((double) totalElements / search.size());
+	    // Handle null values with defaults
+	    int pageSize = search.size() != null ? search.size() : 9;
+	    int pageNumber = search.page() != null ? search.page() : 0;
+	    int totalPages = (int) Math.ceil((double) totalElements / pageSize);
 
-	    return new Pagnation<>(list, search.page(), search.size(), totalElements, totalPages);
+	    return new Pagnation<>(list, pageNumber, pageSize, totalElements, totalPages);
 	}
 	@Transactional
 	public PropertyDetails findById(Long id) {
@@ -98,6 +104,24 @@ public class PropertyService {
 	    
 	    entity.setStatus("AVAILABLE"); 
 	    return new ModificationResult<>(true, id, "Property with id %d has been successfully approved and is now AVAILABLE.".formatted(id));
+	}
+
+	@Transactional
+	public ModificationResult<Long> rejectById(Long id) {
+	    var entity = propertyRepository.findById(id)
+	            .orElseThrow(() -> new AppBussinessException("There is no property with id %d".formatted(id)));
+	    
+	    entity.setStatus("REJECTED");
+	    return new ModificationResult<>(true, id, "Property with id %d has been rejected.".formatted(id));
+	}
+
+	public List<PendingPropertyItem> pendingList() {
+	    return propertyRepository.findByStatusOrderByCreatedAtDesc("PENDING").stream()
+	            .map(property -> PendingPropertyItem.from(property,
+	                    property.getOwner() != null
+	                            ? profileRepo.findByUserId(property.getOwner().getId()).orElse(null)
+	                            : null))
+	            .toList();
 	}
 	
 	@Transactional

@@ -25,26 +25,32 @@ public record PropertyForm(
 	    @NotBlank(message = "Township is required")
 	    String township,
 	    
-	    @NotBlank(message = "City is required")
-	    String city,
-	    
-	    @NotNull(message = "Owner ID is required")
-	    Long ownerId
+@NotBlank(message = "City is required")
+    String city,
+    
+    Double latitude,
+    
+    Double longitude,
+    
+    @NotNull(message = "Owner ID is required")
+    Long ownerId
 	) {
 
-	    public Property entity() {
-	        var entity = new Property();
-	        update(entity);
-	        entity.setStatus("AVAILABLE");
-	        return entity;
-	    }
-	    public void update(Property entity) {
-	        entity.setTitle(title);
-	        entity.setDescription(description);
-	        entity.setPropertyType(propertyType);
-	        entity.setListingType(listingType);
-	        entity.setPrice(price);
-	        entity.setTownship(township);
-	        entity.setCity(city);
-	    }
+    public Property entity() {
+        var entity = new Property();
+        update(entity);
+        entity.setStatus("AVAILABLE");
+        return entity;
+    }
+    public void update(Property entity) {
+        entity.setTitle(title);
+        entity.setDescription(description);
+        entity.setPropertyType(propertyType);
+        entity.setListingType(listingType);
+        entity.setPrice(price);
+        entity.setTownship(township);
+        entity.setCity(city);
+        entity.setLatitude(latitude);
+        entity.setLongitude(longitude);
+    }
 }

@@ -25,7 +25,7 @@ public record PropertySearch(
 ) {
     public Predicate[] where(CriteriaBuilder cb, Root<Property> root) {
         var predicates = new ArrayList<Predicate>();
-        // Keyword Search (Title သို့မဟုတ် Description တွင် တူညီမှု ရှိ၊ မရှိ)
+        
         if (keyword != null && !keyword.isBlank()) {
             var likePattern = keyword.toLowerCase().concat("%");
             predicates.add(cb.or(

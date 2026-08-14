@@ -17,6 +17,4 @@ public class AppBussinessException extends RuntimeException{
 		super(cause);
 	}
 	
-	
-
 }

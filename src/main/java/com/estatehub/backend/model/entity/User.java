@@ -35,9 +35,6 @@ public class User implements UserDetails{
     @Column(name = "password_hash", nullable = false)
     private String password;
 
-    @Column(length = 50)
-    private String phone;
-
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private UserRoles role;
@@ -78,4 +75,5 @@ public class User implements UserDetails{
     @Override public boolean isAccountNonLocked() { return true; }
     @Override public boolean isCredentialsNonExpired() { return true; }
     @Override public boolean isEnabled() { return true; }
+    
 }

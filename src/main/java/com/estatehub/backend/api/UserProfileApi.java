@@ -9,13 +9,13 @@ import org.springframework.web.bind.annotation.RestController;
 import com.estatehub.backend.model.dto.Input.UserProfileForm;
 import com.estatehub.backend.model.dto.Output.ModificationResult;
 import com.estatehub.backend.model.dto.Output.UserProfileDetails;
-import com.estatehub.backend.service.AuthService;
 import com.estatehub.backend.service.UserProfileService;
+import com.estatehub.backend.utils.SecurityUtils;
 
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/api/profile")
+@RequestMapping("/api/user/profile")
 @RequiredArgsConstructor
 public class UserProfileApi {
 
@@ -23,7 +23,7 @@ public class UserProfileApi {
 
     @GetMapping
     public UserProfileDetails getMyProfile() {
-    	var userId = AuthService.getCurrentUserId();
+    	var userId = SecurityUtils.getCurrentUserId();
         return profileService.findByUserId(userId);
     }
 
@@ -31,7 +31,7 @@ public class UserProfileApi {
     public ModificationResult<Long> updateMyProfile(
             @RequestBody UserProfileForm request) {
     	
-    	var userId = AuthService.getCurrentUserId();
+    	var userId = SecurityUtils.getCurrentUserId();
         return profileService.update(userId, request);
     }
 }

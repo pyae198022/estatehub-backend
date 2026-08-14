@@ -16,6 +16,7 @@ import com.estatehub.backend.model.dto.Input.PropertyForm;
 import com.estatehub.backend.model.dto.Input.PropertySearch;
 import com.estatehub.backend.model.dto.Output.ModificationResult;
 import com.estatehub.backend.model.dto.Output.Pagnation;
+import com.estatehub.backend.model.dto.Output.PendingPropertyItem;
 import com.estatehub.backend.model.dto.Output.PropertyDetails;
 import com.estatehub.backend.model.dto.Output.PropertyListItem;
 import com.estatehub.backend.service.PropertyService;
@@ -59,6 +60,21 @@ public class PropertyApi {
     @PutMapping("/{id}/approve")
     public ModificationResult<Long> approveProperty(@PathVariable Long id) {
         return propertyService.approveById(id);
+    }
+    
+    @GetMapping("/admin/pending")
+    public List<PendingPropertyItem> pendingProperties() {
+        return propertyService.pendingList();
+    }
+
+    @PutMapping("/admin/{id}/approve")
+    public ModificationResult<Long> adminApprove(@PathVariable Long id) {
+        return propertyService.approveById(id);
+    }
+
+    @PutMapping("/admin/{id}/reject")
+    public ModificationResult<Long> adminReject(@PathVariable Long id) {
+        return propertyService.rejectById(id);
     }
     
     @PostMapping("/{id}/images")

@@ -27,8 +27,12 @@ public class BaseRepoImpl<T, ID> extends SimpleJpaRepository<T, ID> implements B
 	    var cq = queryFunc.apply(cb);
 	    var query = entityManager.createQuery(cq);
 	    
-	    int pageSize = search.size(); 
-	    int firstResult = search.page() * pageSize;
+	    // Handle null values with defaults
+	    Integer pageSizeValue = search.size();
+	    Integer pageNumberValue = search.page();
+	    int pageSize = pageSizeValue != null ? pageSizeValue : 9; 
+	    int pageNumber = pageNumberValue != null ? pageNumberValue : 0;
+	    int firstResult = pageNumber * pageSize;
 	    
 	    query.setFirstResult(firstResult);
 	    query.setMaxResults(pageSize);

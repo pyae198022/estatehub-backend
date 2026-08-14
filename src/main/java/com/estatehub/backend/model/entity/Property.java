@@ -51,6 +51,12 @@ public class Property {
 	@Column(nullable = false)
 	private String city;
 
+	@Column
+	private Double latitude;
+
+	@Column
+	private Double longitude;
+
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "owner_id", nullable = false)
 	private User owner;

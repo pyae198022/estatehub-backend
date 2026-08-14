@@ -1,6 +1,5 @@
 package com.estatehub.backend.service;
 
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -8,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.estatehub.backend.model.dto.Input.RegisterRequest;
 import com.estatehub.backend.model.entity.User;
 import com.estatehub.backend.model.entity.UserProfile;
+import com.estatehub.backend.model.enums.UserRoles;
 import com.estatehub.backend.model.repo.UserProfileRepo;
 import com.estatehub.backend.model.repo.UserRepo;
 import com.estatehub.backend.utils.AppBussinessException;
@@ -31,12 +31,17 @@ public class AuthService {
         var user = new User();
         user.setEmail(request.email());
         user.setPassword(passwordEncoder.encode(request.password()));
-        user.setRole(request.role());
+        var role = request.getEffectiveRole();
+        if (role == UserRoles.ADMIN) {
+            role = UserRoles.BUYER;
+        }
+        user.setRole(role);
         
-        userRepo.save(user);
+        
+        var newUser = userRepo.save(user);
 
         var profile = new UserProfile();
-        profile.setUser(user);
+        profile.setUser(newUser);
         profile.setFullName(request.fullName());
         
         profileRepo.save(profile);
@@ -52,13 +57,5 @@ public class AuthService {
         }
         
         return jwtService.generateToken(email);
-    }
-    
-    public static Long getCurrentUserId() {
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if (principal instanceof User user) {
-            return user.getId();
-        }
-        throw new AppBussinessException("User is not authenticated");
     }
 }
