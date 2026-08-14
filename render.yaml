@@ -1,0 +1,22 @@
+services:
+  - type: web
+    name: estatehub-backend
+    runtime: docker
+    repo: https://github.com/pyae198022/estatehub-backend
+    plan: free
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /api/properties/search
+    autoDeploy: true
+    envVars:
+      - key: DB_URL
+        sync: false
+      - key: DB_USERNAME
+        sync: false
+      - key: DB_PASSWORD
+        sync: false
+      - key: JWT_SECRET
+        sync: false
+      - key: CORS_ORIGINS
+        value: http://localhost:5173,http://localhost:5174
+      - key: UPLOAD_DIR
+        value: /tmp/estatehub-uploads

@@ -51,10 +51,10 @@ public class AuthService {
     @Transactional
     public String login(String email, String password) {
         var user = userRepo.findByEmail(email)
-                .orElseThrow(() -> new AppBussinessException("User not found"));
+                .orElseThrow(() -> new AppBussinessException("No account found with this email address."));
         
         if (!passwordEncoder.matches(password, user.getPassword())) {
-            throw new AppBussinessException("Invalid password");
+            throw new AppBussinessException("Incorrect password. Please try again.");
         }
         
         return jwtService.generateToken(email);

@@ -1,7 +1,9 @@
 package com.estatehub.backend.config;
 
+import java.util.Arrays;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -25,6 +27,9 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
+    @Value("${cors.allowed-origins}")
+    private String allowedOrigins;
+
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http, JwtAuthenticationFilter jwtAuthFilter) throws Exception {
         return http
@@ -43,8 +48,8 @@ public class SecurityConfig {
                 .requestMatchers("/api/properties/search").permitAll()
                 .requestMatchers(HttpMethod.PUT, "/api/properties/*/approve").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.POST, "/api/properties/**").hasRole("SELLER")
-                .requestMatchers(HttpMethod.PUT, "/api/properties/**").hasRole("SELLER")
-                .requestMatchers(HttpMethod.DELETE, "/api/properties/**").hasRole("SELLER")
+                .requestMatchers(HttpMethod.PUT, "/api/properties/**").hasAnyRole("SELLER", "ADMIN")
+                .requestMatchers(HttpMethod.DELETE, "/api/properties/**").hasAnyRole("SELLER", "ADMIN")
                 .requestMatchers(HttpMethod.GET, "/api/properties/mine").hasRole("SELLER")
                 .requestMatchers(HttpMethod.GET, "/api/properties/*/documents").hasAnyRole("SELLER", "ADMIN")
                 .requestMatchers(HttpMethod.GET, "/api/properties/{id}").permitAll()
@@ -59,7 +64,8 @@ public class SecurityConfig {
     CorsConfigurationSource corsConfigurationSource() {
         var configuration = new CorsConfiguration();
         
-        configuration.setAllowedOrigins(List.of("http://localhost:5173", "http://localhost:5174")); 
+        configuration.setAllowedOrigins(
+            Arrays.stream(allowedOrigins.split(",")).map(String::trim).toList()); 
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("Authorization", "Content-Type", "Accept"));
         configuration.setAllowCredentials(true);
