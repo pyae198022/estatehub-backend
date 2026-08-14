@@ -6,7 +6,8 @@ public record RegisterRequest(
 	    String email,
 	    String password,
 	    String fullName,
-	    UserRoles role
+	    UserRoles role,
+	    String bio
 	) {
     // Convenience method to get the role with a default of BUYER
     public UserRoles getEffectiveRole() {

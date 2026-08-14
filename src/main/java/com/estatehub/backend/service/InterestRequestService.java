@@ -83,11 +83,11 @@ public class InterestRequestService {
 
 	private InterestRequestItem toItem(InterestRequest request) {
 		var requester = request.getRequester();
-		var requesterName = requester != null
-				? profileRepo.findByUserId(requester.getId())
-						.map(profile -> profile.getFullName())
-						.orElse(null)
+		var profile = requester != null
+				? profileRepo.findByUserId(requester.getId()).orElse(null)
 				: null;
-		return InterestRequestItem.from(request, requesterName);
+		return InterestRequestItem.from(request,
+				profile != null ? profile.getFullName() : null,
+				profile != null ? profile.getBio() : null);
 	}
 }

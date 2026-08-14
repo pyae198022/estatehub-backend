@@ -1,5 +1,7 @@
 package com.estatehub.backend.model.dto.Output;
 
+import java.time.LocalDateTime;
+
 import com.estatehub.backend.model.entity.UserProfile;
 
 public record UserProfileDetails(
@@ -8,8 +10,10 @@ public record UserProfileDetails(
 	    String fullName,
 	    String profileImageUrl,
 	    String bio,
+	    String nrc,
 	    String phone,
-	    String role
+	    String role,
+	    LocalDateTime createdAt
 		) {
 	
 	public static UserProfileDetails from(UserProfile profile) {
@@ -19,8 +23,10 @@ public record UserProfileDetails(
             profile.getFullName(),
             profile.getProfileImageUrl(),
             profile.getBio(),
+            profile.getNrc(),
             profile.getPhone(),
-            profile.getUser().getRole() != null ? profile.getUser().getRole().name() : null
+            profile.getUser().getRole() != null ? profile.getUser().getRole().name() : null,
+            profile.getUser().getCreatedAt()
         );
     }
 }

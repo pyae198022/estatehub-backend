@@ -20,12 +20,14 @@ public record PropertyDetails(
 	    Double longitude,
 	    String status,
 	    Long ownerId,
+	    String ownerName,
+	    String ownerEmail,
 	    List<String> imageUrls,
 	    int viewCount
 
 		) {
 
-	public static PropertyDetails from(Property entity) {
+	public static PropertyDetails from(Property entity, String ownerName, String ownerEmail) {
         if (entity == null) {
             return null;
         }
@@ -43,6 +45,8 @@ public record PropertyDetails(
             entity.getLongitude(),
             entity.getStatus(),
             entity.getOwner() != null ? entity.getOwner().getId() : null,
+            ownerName,
+            ownerEmail,
             entity.getImages().stream().map(PropertyImage::getImageUrl).toList(),
             entity.getViewCount()
         );

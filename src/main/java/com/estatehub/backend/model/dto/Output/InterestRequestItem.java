@@ -11,12 +11,13 @@ public record InterestRequestItem(
 		Long requesterId,
 		String requesterEmail,
 		String requesterName,
+		String requesterBio,
 		String message,
 		String status,
 		LocalDateTime createdAt
 	) {
 
-	public static InterestRequestItem from(InterestRequest request, String requesterName) {
+	public static InterestRequestItem from(InterestRequest request, String requesterName, String requesterBio) {
 		return new InterestRequestItem(
 			request.getId(),
 			request.getProperty() != null ? request.getProperty().getId() : null,
@@ -24,6 +25,7 @@ public record InterestRequestItem(
 			request.getRequester() != null ? request.getRequester().getId() : null,
 			request.getRequester() != null ? request.getRequester().getEmail() : null,
 			requesterName,
+			requesterBio,
 			request.getMessage(),
 			request.getStatus(),
 			request.getCreatedAt()

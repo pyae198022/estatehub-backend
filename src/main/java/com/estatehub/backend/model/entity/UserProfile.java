@@ -21,6 +21,9 @@ public class UserProfile {
     private String profileImageUrl;
     private String bio;
     
+    @Column(name = "nrc")
+    private String nrc;
+
     @Column(length = 50)
     private String phone;
 

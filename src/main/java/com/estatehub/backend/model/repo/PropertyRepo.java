@@ -9,4 +9,6 @@ public interface PropertyRepo extends BaseRepo<Property, Long>{
 
 	List<Property> findByStatusOrderByCreatedAtDesc(String status);
 
+	List<Property> findByOwnerIdOrderByCreatedAtDesc(Long ownerId);
+
 }

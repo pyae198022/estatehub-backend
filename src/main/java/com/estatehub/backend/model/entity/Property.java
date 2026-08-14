@@ -72,6 +72,9 @@ public class Property {
 	
 	@OneToMany(mappedBy = "property", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<PropertyImage> images = new ArrayList<>();
+	
+	@OneToMany(mappedBy = "property", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<PropertyDocument> documents = new ArrayList<>();
 
 	@PrePersist
 	protected void onCreate() {

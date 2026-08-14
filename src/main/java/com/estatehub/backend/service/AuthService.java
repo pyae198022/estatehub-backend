@@ -43,6 +43,7 @@ public class AuthService {
         var profile = new UserProfile();
         profile.setUser(newUser);
         profile.setFullName(request.fullName());
+        profile.setBio(request.bio());
         
         profileRepo.save(profile);
     }

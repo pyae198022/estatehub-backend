@@ -5,6 +5,7 @@ public record UserProfileForm(
 		String fullName,
 	    String profileImageUrl,
 	    String bio,
+	    String nrc,
 	    String phone
 	  
 		) {
