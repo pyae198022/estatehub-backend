@@ -12,12 +12,11 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
-import jakarta.persistence.UniqueConstraint;
 import lombok.Data;
 
 @Entity
 @Data
-@Table(name = "chat_group", uniqueConstraints = @UniqueConstraint(columnNames = { "interest_request_id" }))
+@Table(name = "chat_group")
 public class ChatGroup {
 
 	@Id
@@ -25,7 +24,7 @@ public class ChatGroup {
 	private Long id;
 
 	@ManyToOne(fetch = FetchType.LAZY, optional = false)
-	@JoinColumn(name = "interest_request_id", nullable = false, unique = true)
+	@JoinColumn(name = "interest_request_id", nullable = false)
 	private InterestRequest interestRequest;
 
 	@Column(nullable = false)

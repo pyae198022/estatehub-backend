@@ -18,17 +18,17 @@ public record ChatGroupItem(
 		String status,
 		LocalDateTime createdAt) {
 
-	public static ChatGroupItem from(ChatGroup group, String buyerName, String sellerName, String lastMessage,
-			LocalDateTime lastMessageAt) {
+	public static ChatGroupItem from(ChatGroup group, Long buyerId, String buyerName, Long sellerId,
+			String sellerName, String lastMessage, LocalDateTime lastMessageAt) {
 		var property = group.getInterestRequest().getProperty();
 		return new ChatGroupItem(
 				group.getId(),
 				group.getInterestRequest().getId(),
 				property.getId(),
 				property.getTitle(),
-				group.getInterestRequest().getRequester().getId(),
+				buyerId,
 				buyerName,
-				property.getOwner().getId(),
+				sellerId,
 				sellerName,
 				lastMessage,
 				lastMessageAt,

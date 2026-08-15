@@ -45,20 +45,35 @@ public class ChatGroupService {
 		if (!interest.getProperty().getOwner().getId().equals(sellerId)) {
 			throw new AppBussinessException("You can only accept buyers for your own listing");
 		}
-		groupRepo.findByInterestRequest_Id(interestId).ifPresent(existing -> {
-			throw new AppBussinessException("A chat group already exists for this interest request");
-		});
 
-		var group = new ChatGroup();
-		group.setInterestRequest(interest);
-		group.setStatus("ACTIVE");
-		group = groupRepo.save(group);
+		var buyer = interest.getRequester();
+		var existing = memberRepo.findByUser_IdAndRemovedAtIsNull(sellerId).stream()
+				.map(ChatGroupMember::getGroup)
+				.filter(group -> "ACTIVE".equals(group.getStatus()))
+				.filter(group -> memberRepo.findByGroup_IdAndUser_Id(group.getId(), buyer.getId())
+						.map(member -> member.getRemovedAt() == null && "BUYER".equals(member.getRole()))
+						.orElse(false))
+				.findFirst();
 
-		saveMember(group, interest.getRequester(), "BUYER");
-		saveMember(group, interest.getProperty().getOwner(), "SELLER");
+		Long groupId;
+		String message;
+		if (existing.isPresent()) {
+			groupId = existing.get().getId();
+			message = "Buyer added to the existing chat group";
+		} else {
+			var group = new ChatGroup();
+			group.setInterestRequest(interest);
+			group.setStatus("ACTIVE");
+			group = groupRepo.save(group);
+
+			saveMember(group, buyer, "BUYER");
+			saveMember(group, interest.getProperty().getOwner(), "SELLER");
+			groupId = group.getId();
+			message = "Chat group created for this buyer";
+		}
 
 		interest.setStatus("ACCEPTED");
-		return ModificationResult.success(group.getId());
+		return new ModificationResult<>(true, groupId, message);
 	}
 
 	public List<ChatGroupItem> mine(Long userId) {
@@ -142,13 +157,23 @@ public class ChatGroupService {
 	}
 
 	private ChatGroupItem toGroupItem(ChatGroup group) {
-		var interest = group.getInterestRequest();
-		var buyer = interest.getRequester();
-		var seller = interest.getProperty().getOwner();
+		var members = memberRepo.findByGroup_IdOrderByJoinedAt(group.getId());
+		var buyer = members.stream()
+				.filter(member -> "BUYER".equals(member.getRole()))
+				.findFirst()
+				.map(ChatGroupMember::getUser)
+				.orElse(null);
+		var seller = members.stream()
+				.filter(member -> "SELLER".equals(member.getRole()))
+				.findFirst()
+				.map(ChatGroupMember::getUser)
+				.orElse(null);
 		var lastMessage = messageRepo.findTopByGroup_IdOrderByCreatedAtDesc(group.getId()).orElse(null);
 		return ChatGroupItem.from(group,
-				nameOf(buyer.getId()),
-				nameOf(seller.getId()),
+				buyer != null ? buyer.getId() : null,
+				buyer != null ? nameOf(buyer.getId()) : null,
+				seller != null ? seller.getId() : null,
+				seller != null ? nameOf(seller.getId()) : null,
 				lastMessage != null ? lastMessage.getContent() : null,
 				lastMessage != null ? lastMessage.getCreatedAt() : null);
 	}
