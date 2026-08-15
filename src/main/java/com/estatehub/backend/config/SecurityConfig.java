@@ -40,6 +40,8 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.GET, "/uploads/**").permitAll()
                 .requestMatchers("/api/admin/**").hasRole("ADMIN")
                 .requestMatchers("/api/interests/admin/**").hasRole("ADMIN")
+                .requestMatchers("/api/groups/admin/**").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.POST, "/api/groups/accept/**").hasRole("SELLER")
                 .requestMatchers(HttpMethod.GET, "/api/interests/owner").hasRole("SELLER")
                 .requestMatchers(HttpMethod.GET, "/api/user/profile/{userId}").hasAnyRole("SELLER", "ADMIN")
                 .requestMatchers(HttpMethod.PUT, "/api/interests/*/approve").hasRole("ADMIN")
